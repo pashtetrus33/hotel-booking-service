@@ -2,6 +2,7 @@ package ru.skillbox.hotel_booking_service.utils;
 
 import lombok.experimental.UtilityClass;
 import ru.skillbox.hotel_booking_service.entity.Hotel;
+import ru.skillbox.hotel_booking_service.entity.Room;
 
 @UtilityClass
 public class BeanUtils {
@@ -34,6 +35,46 @@ public class BeanUtils {
 
         if (source.getDistanceFromCityCenter() >= 0) {
             destination.setDistanceFromCityCenter(source.getDistanceFromCityCenter());
+        }
+    }
+
+
+    public void copyRoomNotNullProperties(Room source, Room destination) {
+        if (source == null || destination == null) {
+            throw new IllegalArgumentException("Source and destination must not be null");
+        }
+
+        if (source.getId() != null) {
+            destination.setId(source.getId());
+        }
+
+        if (source.getName() != null) {
+            destination.setName(source.getName());
+        }
+
+        if (source.getRoomNumber() != null) {
+            destination.setRoomNumber(source.getRoomNumber());
+        }
+
+        if (source.getDescription() != null) {
+            destination.setDescription(source.getDescription());
+        }
+
+        if (source.getPrice() != null) {
+            destination.setPrice(source.getPrice());
+        }
+
+
+        if (source.getUnavailableDates() != null && !source.getUnavailableDates().isEmpty()) {
+            destination.setUnavailableDates(source.getUnavailableDates());
+        }
+
+        if (source.getHotel() != null) {
+            destination.setHotel(source.getHotel());
+        }
+
+        if (source.getMaxOccupancy() > 0) {
+            destination.setMaxOccupancy(source.getMaxOccupancy());
         }
     }
 }
