@@ -1,11 +1,11 @@
 package ru.skillbox.hotel_booking_service.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.skillbox.hotel_booking_service.entity.Hotel;
+import ru.skillbox.hotel_booking_service.exception.EntityNotFoundException;
 import ru.skillbox.hotel_booking_service.mapper.HotelMapper;
 import ru.skillbox.hotel_booking_service.repository.HotelRepository;
 import ru.skillbox.hotel_booking_service.service.HotelService;
