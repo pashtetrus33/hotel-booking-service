@@ -1,7 +1,6 @@
 package ru.skillbox.hotel_booking_service.web.model;
 
 
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Data;

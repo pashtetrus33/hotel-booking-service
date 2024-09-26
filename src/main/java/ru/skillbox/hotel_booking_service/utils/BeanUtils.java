@@ -3,6 +3,7 @@ package ru.skillbox.hotel_booking_service.utils;
 import lombok.experimental.UtilityClass;
 import ru.skillbox.hotel_booking_service.entity.Hotel;
 import ru.skillbox.hotel_booking_service.entity.Room;
+import ru.skillbox.hotel_booking_service.entity.User;
 
 @UtilityClass
 public class BeanUtils {
@@ -75,6 +76,32 @@ public class BeanUtils {
 
         if (source.getMaxOccupancy() > 0) {
             destination.setMaxOccupancy(source.getMaxOccupancy());
+        }
+    }
+
+    public void copyUserNotNullProperties(User source, User destination) {
+        if (source == null || destination == null) {
+            throw new IllegalArgumentException("Source and destination must not be null");
+        }
+
+        if (source.getId() != null) {
+            destination.setId(source.getId());
+        }
+
+        if (source.getUsername() != null) {
+            destination.setUsername(source.getUsername());
+        }
+
+        if (source.getPassword() != null) {
+            destination.setPassword(source.getPassword());
+        }
+
+        if (source.getEmail() != null) {
+            destination.setEmail(source.getEmail());
+        }
+
+        if (source.getRole() != null) {
+            destination.setRole(source.getRole());
         }
     }
 }
