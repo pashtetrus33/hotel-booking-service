@@ -1,0 +1,60 @@
+package ru.skillbox.hotel_booking_service.service.impl;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import ru.skillbox.hotel_booking_service.entity.Hotel;
+import ru.skillbox.hotel_booking_service.mapper.HotelMapper;
+import ru.skillbox.hotel_booking_service.repository.HotelRepository;
+import ru.skillbox.hotel_booking_service.service.HotelService;
+import ru.skillbox.hotel_booking_service.utils.BeanUtils;
+import ru.skillbox.hotel_booking_service.web.model.HotelListResponse;
+import ru.skillbox.hotel_booking_service.web.model.HotelResponse;
+import ru.skillbox.hotel_booking_service.web.model.UpdateHotelRequest;
+import ru.skillbox.hotel_booking_service.web.model.UpsertHotelRequest;
+
+import java.text.MessageFormat;
+
+@Service
+@RequiredArgsConstructor
+public class HotelServiceImpl implements HotelService {
+
+    private final HotelRepository hotelRepository;
+    private final HotelMapper hotelMapper;
+
+    @Override
+    public HotelListResponse findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return hotelMapper.hotelListToHotelListResponse(hotelRepository.findAll(pageable));
+    }
+
+    @Override
+    public HotelResponse findById(Long id) {
+        return hotelMapper.hotelToResponse(hotelRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException(MessageFormat.format("Hotel with ID {0} not found", id))));
+    }
+
+    @Override
+    public HotelResponse save(UpsertHotelRequest request) {
+        return hotelMapper.hotelToResponse(hotelRepository.save(hotelMapper.requestToHotel(request)));
+    }
+
+    @Override
+    public HotelResponse update(Long id, UpdateHotelRequest request) {
+
+        Hotel existedHotel = hotelMapper.responseToHotel(findById(id));
+        Hotel updatedHotel = hotelMapper.requestToHotel(id, request);
+
+        BeanUtils.copyHotelNotNullProperties(updatedHotel, existedHotel);
+
+        return hotelMapper.hotelToResponse(hotelRepository.save(existedHotel));
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        findById(id);
+        hotelRepository.deleteById(id);
+    }
+}
