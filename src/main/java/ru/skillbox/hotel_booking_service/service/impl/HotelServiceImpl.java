@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.skillbox.hotel_booking_service.entity.Hotel;
 import ru.skillbox.hotel_booking_service.exception.EntityNotFoundException;
@@ -89,11 +90,16 @@ public class HotelServiceImpl implements HotelService {
         hotel.setRating(newRating);
 
         hotelRepository.save(hotel);
+<<<<<<< HEAD
     }
 
     @Override
     public HotelListResponse filterBy(HotelFilter filter) {
         return hotelMapper.hotelListToHotelListResponse(hotelRepository.findAll(HotelSpecification.withFilter(filter), PageRequest.of(
                 filter.getPage(), filter.getSize())));
+=======
+
+
+>>>>>>> 563d0345f347e946c278863ccc86e8a3daa1917c
     }
 }
