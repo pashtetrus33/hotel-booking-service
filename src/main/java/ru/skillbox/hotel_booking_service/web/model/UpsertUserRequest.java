@@ -12,8 +12,8 @@ public class UpsertUserRequest {
     @Size(min = 1, max = 150, message = "Username must be between 1 and 150 characters")
     private String username;
 
-    @NotBlank(message = "Password is mandatory")
-    @Size(min = 6, message = "Password must be at least 6 characters long")
+    @NotBlank(message = "Password is mandatory!")
+    @Size(min = 8, max = 30, message = "Password length min: {min} max: {max}!")
     private String password;
 
     @NotBlank(message = "Email is mandatory")

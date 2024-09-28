@@ -1,6 +1,7 @@
 package ru.skillbox.hotel_booking_service.service;
 
 import ru.skillbox.hotel_booking_service.entity.RoleType;
+import ru.skillbox.hotel_booking_service.entity.User;
 import ru.skillbox.hotel_booking_service.web.model.*;
 
 public interface UserService {
@@ -9,7 +10,7 @@ public interface UserService {
 
     UserResponse findById(Long id);
 
-    UserResponse findByUsername(String username);
+    User findByUsername(String username);
 
     UserResponse save(UpsertUserRequest request, RoleType roleType);
 
