@@ -90,16 +90,13 @@ public class HotelServiceImpl implements HotelService {
         hotel.setRating(newRating);
 
         hotelRepository.save(hotel);
-<<<<<<< HEAD
+
     }
 
     @Override
     public HotelListResponse filterBy(HotelFilter filter) {
         return hotelMapper.hotelListToHotelListResponse(hotelRepository.findAll(HotelSpecification.withFilter(filter), PageRequest.of(
                 filter.getPage(), filter.getSize())));
-=======
 
-
->>>>>>> 563d0345f347e946c278863ccc86e8a3daa1917c
     }
 }
