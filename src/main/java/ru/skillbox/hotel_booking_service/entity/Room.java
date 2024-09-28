@@ -20,12 +20,22 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(length = 500)
     private String description;
+
+    @Column(nullable = false, unique = true)
     private String roomNumber;
+
+    @Column(nullable = false)
     private BigDecimal price;
+
+    @Column(nullable = false)
     private int maxOccupancy;
 
+    // Список недоступных дат
     @ElementCollection
     @Builder.Default
     private List<LocalDate> unavailableDates = new ArrayList<>();
@@ -34,4 +44,22 @@ public class Room {
     @JoinColumn(name = "hotel_id", nullable = false)
     @ToString.Exclude
     private Hotel hotel;
+
+
+    public void addUnavailableDate(LocalDate date) {
+        this.unavailableDates.add(date);
+    }
+
+    public void removeUnavailableDate(LocalDate date) {
+        this.unavailableDates.remove(date);
+    }
+
+    public boolean isAvailable(LocalDate checkInDate, LocalDate checkOutDate) {
+        for (LocalDate date : unavailableDates) {
+            if (!date.isBefore(checkInDate) && !date.isAfter(checkOutDate)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
