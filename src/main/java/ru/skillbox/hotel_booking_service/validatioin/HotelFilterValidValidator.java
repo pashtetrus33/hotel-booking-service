@@ -9,7 +9,7 @@ public class HotelFilterValidValidator implements ConstraintValidator<HotelFilte
 
     @Override
     public boolean isValid(HotelFilter value, ConstraintValidatorContext context) {
-        // Check if both page and size fields are specified
+
         if (ObjectUtils.anyNull(value.getPage(), value.getSize())) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("Both page and size must be specified.")
@@ -17,7 +17,7 @@ public class HotelFilterValidValidator implements ConstraintValidator<HotelFilte
             return false;
         }
 
-        // Check if at least one of authorId, assigneeId, or searchQuery is provided
+
         if (ObjectUtils.allNull(value.getId(), value.getName(), value.getCity(), value.getAddress(),
                 value.getAnnouncement(), value.getReviewCount(), value.getRating(), value.getDistanceFromCityCenter())) {
             context.disableDefaultConstraintViolation();

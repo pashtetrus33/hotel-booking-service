@@ -32,12 +32,12 @@ public class HotelFilter {
     private String address;
 
     @PositiveOrZero(message = "Distance from center must be positive or zero")
-    private Double distanceFromCityCenter;  // Изменено на класс-обёртку
+    private Double distanceFromCityCenter;
 
     @DecimalMin(value = "0.0", message = "Rating cannot be less than 0")
     @DecimalMax(value = "5.0", message = "Rating cannot be more than 5")
     private Double rating;  // Изменено на класс-обёртку
 
     @Min(value = 0, message = "Number of ratings cannot be negative")
-    private Integer reviewCount;  // Изменено на класс-обёртку
+    private Integer reviewCount;
 }
