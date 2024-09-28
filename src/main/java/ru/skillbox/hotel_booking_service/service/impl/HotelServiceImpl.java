@@ -97,6 +97,5 @@ public class HotelServiceImpl implements HotelService {
     public HotelListResponse filterBy(HotelFilter filter) {
         return hotelMapper.hotelListToHotelListResponse(hotelRepository.findAll(HotelSpecification.withFilter(filter), PageRequest.of(
                 filter.getPage(), filter.getSize())));
-
     }
 }

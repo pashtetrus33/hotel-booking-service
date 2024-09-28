@@ -1,8 +1,6 @@
 package ru.skillbox.hotel_booking_service.service;
 
-import ru.skillbox.hotel_booking_service.web.model.RoomResponse;
-import ru.skillbox.hotel_booking_service.web.model.UpdateRoomRequest;
-import ru.skillbox.hotel_booking_service.web.model.UpsertRoomRequest;
+import ru.skillbox.hotel_booking_service.web.model.*;
 
 public interface RoomService {
 
@@ -13,4 +11,6 @@ public interface RoomService {
     RoomResponse update(Long id, UpdateRoomRequest request);
 
     void deleteById(Long id);
+
+    RoomListResponse filterBy(RoomFilter filter);
 }

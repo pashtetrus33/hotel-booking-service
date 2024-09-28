@@ -47,4 +47,10 @@ public class RoomController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @GetMapping("/filter")
+    public ResponseEntity<RoomListResponse> filterBy(@Valid RoomFilter filter) {
+        return ResponseEntity.ok(roomService.filterBy(filter));
+    }
 }

@@ -1,13 +1,16 @@
 package ru.skillbox.hotel_booking_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.skillbox.hotel_booking_service.entity.Hotel;
 import ru.skillbox.hotel_booking_service.entity.Room;
 import ru.skillbox.hotel_booking_service.exception.EntityNotFoundException;
 import ru.skillbox.hotel_booking_service.mapper.HotelMapper;
 import ru.skillbox.hotel_booking_service.mapper.RoomMapper;
+import ru.skillbox.hotel_booking_service.repository.HotelSpecification;
 import ru.skillbox.hotel_booking_service.repository.RoomRepository;
+import ru.skillbox.hotel_booking_service.repository.RoomSpecification;
 import ru.skillbox.hotel_booking_service.service.HotelService;
 import ru.skillbox.hotel_booking_service.service.RoomService;
 import ru.skillbox.hotel_booking_service.utils.BeanUtils;
@@ -61,5 +64,11 @@ public class RoomServiceImpl implements RoomService {
     public void deleteById(Long id) {
         findById(id);
         roomRepository.deleteById(id);
+    }
+
+    @Override
+    public RoomListResponse filterBy(RoomFilter filter) {
+        return roomMapper.roomListToRoomListResponse(roomRepository.findAll(RoomSpecification.withFilter(filter),
+                PageRequest.of(filter.getPage(), filter.getSize())));
     }
 }
