@@ -20,6 +20,7 @@ public interface HotelMapper {
 
     Hotel responseToHotel(HotelResponse response);
 
+    @Mapping(target = "reviewCount", source = "ratingCount")
     HotelResponse hotelToResponse(Hotel hotel);
 
     default HotelListResponse hotelListToHotelListResponse(Page<Hotel> hotelPage) {

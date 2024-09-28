@@ -13,6 +13,7 @@ import java.util.List;
 public class HotelListResponse {
 
     private List<HotelResponse> hotels = new ArrayList<>();
+
     private long totalElements;
     private int totalPages;
     private int currentPage;

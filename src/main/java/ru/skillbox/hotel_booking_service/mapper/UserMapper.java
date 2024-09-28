@@ -1,7 +1,6 @@
 package ru.skillbox.hotel_booking_service.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.data.domain.Page;
 import ru.skillbox.hotel_booking_service.entity.User;

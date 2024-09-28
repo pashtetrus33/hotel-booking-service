@@ -4,6 +4,7 @@ import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.skillbox.hotel_booking_service.entity.RoleType;
 import ru.skillbox.hotel_booking_service.entity.User;
@@ -22,6 +23,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserListResponse findAll(int page, int size) {
@@ -36,11 +38,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse findByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User not found" + username));
+    public User findByUsername(String username) {
 
-        return userMapper.userToResponse(user);
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found" + username));
     }
 
     @Override
@@ -53,6 +54,7 @@ public class UserServiceImpl implements UserService {
 
         User user = userMapper.requesttoUser(request);
         user.setRole(roleType);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userMapper.userToResponse(userRepository.save(user));
     }
@@ -61,12 +63,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse update(Long id, UpdateUserRequest request, RoleType roleType) {
 
-        User existedUser = userMapper.responseToUser(findById(id));
+        User existedUser = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("User with ID {0} not found", id)));
+
         User updatedUser = userMapper.requesttoUser(id, request);
+
+        if (updatedUser.getPassword() != null) {
+            updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
 
         BeanUtils.copyUserNotNullProperties(updatedUser, existedUser);
 
-        existedUser.setRole(roleType);
+        if (roleType != null) {
+            existedUser.setRole(roleType);
+        }
+
 
         return userMapper.userToResponse(userRepository.save(existedUser));
     }

@@ -1,9 +1,7 @@
 package ru.skillbox.hotel_booking_service.service;
 
-import ru.skillbox.hotel_booking_service.web.model.HotelListResponse;
-import ru.skillbox.hotel_booking_service.web.model.HotelResponse;
-import ru.skillbox.hotel_booking_service.web.model.UpdateHotelRequest;
-import ru.skillbox.hotel_booking_service.web.model.UpsertHotelRequest;
+import jakarta.validation.Valid;
+import ru.skillbox.hotel_booking_service.web.model.*;
 
 public interface HotelService {
 
@@ -16,4 +14,8 @@ public interface HotelService {
     HotelResponse update(Long id, UpdateHotelRequest request);
 
     void deleteById(Long id);
+
+    void updateHotelRating(Long id, double newMark);
+
+    HotelListResponse filterBy(HotelFilter filter);
 }
