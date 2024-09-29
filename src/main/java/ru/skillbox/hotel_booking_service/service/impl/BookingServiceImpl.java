@@ -1,12 +1,16 @@
 package ru.skillbox.hotel_booking_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import ru.skillbox.hotel_booking_service.entity.Booking;
 import ru.skillbox.hotel_booking_service.entity.Room;
 import ru.skillbox.hotel_booking_service.entity.User;
+import ru.skillbox.hotel_booking_service.events.RoomBookingEvent;
 import ru.skillbox.hotel_booking_service.exception.EntityNotFoundException;
 import ru.skillbox.hotel_booking_service.mapper.BookingMapper;
 import ru.skillbox.hotel_booking_service.mapper.HotelMapper;
@@ -22,12 +26,12 @@ import ru.skillbox.hotel_booking_service.web.model.BookingListResponse;
 import ru.skillbox.hotel_booking_service.web.model.BookingResponse;
 import ru.skillbox.hotel_booking_service.web.model.UpsertBookingRequest;
 
-import java.text.MessageFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
@@ -41,6 +45,10 @@ public class BookingServiceImpl implements BookingService {
     private final HotelService hotelService;
     private final HotelMapper hotelMapper;
     private final RoomRepository roomRepository;
+    private final KafkaTemplate<String, RoomBookingEvent> kafkaTemplate;
+
+    @Value("${app.kafka.roomBookings}")
+    private String roomBookingTopic;
 
     @Override
     public BookingResponse bookRoom(UpsertBookingRequest request) {
@@ -64,6 +72,12 @@ public class BookingServiceImpl implements BookingService {
 
         // Добавляем забронированные даты в недоступные
         addUnavailableDatesForRoom(room, request.getCheckInDate(), request.getCheckOutDate());
+
+        // Отправка события о бронировании комнаты в Kafka
+        RoomBookingEvent event = new RoomBookingEvent(user.getId(), room.getId(), booking.getCheckInDate(), booking.getCheckOutDate(),
+                LocalDateTime.now());
+        log.info("Saved room booking event: {}", event);
+        kafkaTemplate.send(roomBookingTopic, event);
 
         return bookingMapper.bookingToResponse(savedBooking);
     }

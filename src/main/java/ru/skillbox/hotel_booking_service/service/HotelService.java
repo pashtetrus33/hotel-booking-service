@@ -1,6 +1,5 @@
 package ru.skillbox.hotel_booking_service.service;
 
-import jakarta.validation.Valid;
 import ru.skillbox.hotel_booking_service.web.model.*;
 
 public interface HotelService {

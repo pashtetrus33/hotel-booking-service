@@ -2,12 +2,16 @@ package ru.skillbox.hotel_booking_service.service.impl;
 
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.skillbox.hotel_booking_service.entity.RoleType;
 import ru.skillbox.hotel_booking_service.entity.User;
+import ru.skillbox.hotel_booking_service.events.UserRegistrationEvent;
 import ru.skillbox.hotel_booking_service.exception.EntityNotFoundException;
 import ru.skillbox.hotel_booking_service.mapper.UserMapper;
 import ru.skillbox.hotel_booking_service.repository.UserRepository;
@@ -16,14 +20,20 @@ import ru.skillbox.hotel_booking_service.utils.BeanUtils;
 import ru.skillbox.hotel_booking_service.web.model.*;
 
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    @Value("${app.kafka.userRegistrations}")
+    private String userRegistrationsTopic;
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final KafkaTemplate<String, UserRegistrationEvent> kafkaTemplate;
 
     @Override
     public UserListResponse findAll(int page, int size) {
@@ -56,7 +66,12 @@ public class UserServiceImpl implements UserService {
         user.setRole(roleType);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        return userMapper.userToResponse(userRepository.save(user));
+        User savedUser = userRepository.save(user);
+        // Отправка события о регистрации пользователя в Kafka
+        UserRegistrationEvent event = new UserRegistrationEvent(savedUser.getId(), LocalDateTime.now());
+        log.info("Saved user registration event: {}", event);
+        kafkaTemplate.send(userRegistrationsTopic, event);
+        return userMapper.userToResponse(savedUser);
     }
 
 
